@@ -8,7 +8,7 @@ namespace MASProject.Model
     public class Enviorment 
     {
         Cell[,] mapInfo;
-        
+        PositionTracker positionTracker;
         public int NumOfRows
         {
             get { return mapInfo.GetLength(0); }
@@ -21,6 +21,7 @@ namespace MASProject.Model
 
         public Enviorment(int rows, int coulmns)
         {
+            positionTracker = new PositionTracker();
             mapInfo = new Cell[rows,coulmns];
             for (uint r = 0; r < rows; r++)
             {
@@ -31,47 +32,44 @@ namespace MASProject.Model
             }
 
         }
-        public BaseItem GetItem(int row,int coulmn)
+        public Cell GetCell(int row,int coulmn)
         {
-            return mapInfo[row, coulmn].CellContent;
+            return mapInfo[row, coulmn];
         }
         internal void ItemMoved(BaseItem item, Direction moveTo)
         {
-            //if(InvalidMoveRequest(item.PositionOnMap,moveTo))
-            //    throw new Exception($"Invalid Move! {moveTo} from {item.PositionOnMap}");
-            //if(!item.IsMoveable)
-            //    throw new Exception("Unmovable Item!");
-            //if (mapInfo[item.PositionOnMap.Row , item.PositionOnMap.Column].CellContent != item)
+            var pos = positionTracker.GetMyLocation(item);
+            var cell = mapInfo[pos.Row, pos.Column];
+
+            if (InvalidMoveRequest(pos, moveTo))
+                throw new Exception($"Invalid Move! {moveTo} from {pos}");
+            if (!item.IsMoveable)
+                throw new Exception("Unmovable Item!");
+            //if (mapInfo[item.PositionOnMap.Row, item.PositionOnMap.Column].CellContent != item)
             //    throw new Exception("Item must be added first!");
-            //uint newRow, newCoulmn, oldRow, oldCoulmn;
-            //oldRow = newRow = item.PositionOnMap.Row;
-            //oldCoulmn = newCoulmn = item.PositionOnMap.Column;
-            //switch (moveTo)
-            //{
-            //    case Direction.UP:
-            //        newRow -= 1;
-            //        //mapInfo[item.PositionOnMap.Row - 1, item.PositionOnMap.Column] = item;
-            //        break;
-            //    case Direction.DOWN:
-            //        newRow += 1;
-            //        //mapInfo[item.PositionOnMap.Row + 1, item.PositionOnMap.Column] = item;
-            //        break;
-            //    case Direction.LEFT:
-            //        newCoulmn -= 1;
-            //        //mapInfo[item.PositionOnMap.Row, item.PositionOnMap.Column - 1] = item;
-            //        break;
-            //    case Direction.RIGHT:
-            //        newCoulmn += 1;
-            //        //mapInfo[item.PositionOnMap.Row, item.PositionOnMap.Column + 1] = item;
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //mapInfo[newRow, newCoulmn].MoveInto(item);
-            //mapInfo[oldRow, oldCoulmn].Leave(item);
-            
-            
-            //mapInfo[dst.Row, dst.Column] = objToMove;
+            uint newRow, newCoulmn, oldRow, oldCoulmn;
+            oldRow = newRow = pos.Row;
+            oldCoulmn = newCoulmn = pos.Column;
+            switch (moveTo)
+            {
+                case Direction.UP:
+                    newRow -= 1;                    
+                    break;
+                case Direction.DOWN:
+                    newRow += 1;                    
+                    break;
+                case Direction.LEFT:
+                    newCoulmn -= 1;                    
+                    break;
+                case Direction.RIGHT:
+                    newCoulmn += 1;                    
+                    break;
+                default:
+                    break;
+            }
+            mapInfo[newRow, newCoulmn].MoveInto(item);
+            mapInfo[oldRow, oldCoulmn].Leave(item);
+            positionTracker.SetItemLocation(item, new Position(newRow, newCoulmn));
 
         }
         internal bool AddItem(BaseItem item,Position pos)
@@ -80,6 +78,7 @@ namespace MASProject.Model
             if (!obj.IsEmptyCell())
                 throw new ArgumentException($"{pos} already used! (${obj})");
             mapInfo[pos.Row, pos.Column].MoveInto(item);
+            positionTracker.SetItemLocation(item, pos);
             if (item is MoveableItem moveable)
             {
                 moveable.OnItemMoved += ItemMoved;
@@ -107,7 +106,7 @@ namespace MASProject.Model
                 default:
                     break;
             }
-            return isValid;
+            return !isValid;
         }
 
         private bool IsFreePos(Position pos)

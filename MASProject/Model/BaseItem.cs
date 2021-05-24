@@ -25,7 +25,7 @@ namespace MASProject.Model
      
         public MoveableItem()
         {
-
+            IsMoveable = true;
         }
         internal void Move(Direction direction)
         {

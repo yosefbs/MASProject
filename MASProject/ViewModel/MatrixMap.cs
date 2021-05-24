@@ -20,7 +20,7 @@ namespace MASProject.ViewModel
         }
         protected override object GetCellValue(int rowHeaderValue, int columnHeaderValue)
         {
-            return _map.GetItem(rowHeaderValue, columnHeaderValue);
+            return _map.GetCell(rowHeaderValue, columnHeaderValue);
         }
 
         protected override IEnumerable<int> GetColumnHeaderValues()

@@ -1,20 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace MASProject.Model.Structs
 {
     public delegate void CellContentChanged(Cell sender);
-    public class Cell
+    public class Cell:INotifyPropertyChanged
     {
         public event CellContentChanged OnContentChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
         public Position CellPos { get; private set; }
         public BaseItem CellContent { get; private set; }
         //public IItemOnMap C
         public Cell(Position pos)
         {
             CellPos = pos;
+            OnContentChanged += (cell) => 
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("CellContent"));
+            };
         }
+        
 
         public bool MoveInto(BaseItem item)
         {

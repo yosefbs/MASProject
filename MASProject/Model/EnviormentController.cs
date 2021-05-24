@@ -1,4 +1,5 @@
-﻿using MASProject.Model.Structs;
+﻿using MASProject.Model.Logic;
+using MASProject.Model.Structs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,10 +31,13 @@ namespace MASProject.Model
 
             newMap.AddItem(new Shelf(), new Position(10, 10));
             newMap.AddItem(new Shelf(), new Position(10, 11));
-            newMap.AddItem(new Shelf(), new Position(10, 12));
-            newMap.AddItem(new CarrierBot(), new Position(9, 11));
+            newMap.AddItem(new Shelf(), new Position(10, 12));            
             newMap.AddItem(new Door(), new Position(7, 11));
             newMap.AddItem(new Door(), new Position(19, 19));
+
+            var bot1 = new CarrierBot();
+            new CarrierBotController(bot1, null);
+            newMap.AddItem(bot1, new Position(9, 12));
             return newMap;
         }
     }

@@ -97,4 +97,8 @@
         </Border>
     </DataTemplate>
 
+    <!-- CellItem -->
+    <DataTemplate DataType="{x:Type model:Cell}" >
+        <ContentPresenter Content="{Binding CellContent}"/>
+    </DataTemplate>
 </ResourceDictionary>

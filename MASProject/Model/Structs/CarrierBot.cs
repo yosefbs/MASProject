@@ -6,6 +6,7 @@ namespace MASProject.Model.Structs
 {
     public class CarrierBot : MoveableItem
     {
+
         public CarrierBot()
         {
             //PositionOnMap = position;
