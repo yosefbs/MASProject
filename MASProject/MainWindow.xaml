@@ -9,6 +9,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70*"/>
+            <ColumnDefinition Width="30*"/>
+        </Grid.ColumnDefinitions>
         <view:Map/>
+        <view:MissionsMangerUC Grid.Column="1"/>
     </Grid>
 </Window>

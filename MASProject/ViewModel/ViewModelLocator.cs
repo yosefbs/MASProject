@@ -29,8 +29,10 @@ namespace MASProject.ViewModel
             ////    // Create run time view services and models
             //SimpleIoc.Default.Register<IDataAccessService, DataAccessService>();
             ////}
+            ///
 
             SimpleIoc.Default.Register<MapViewModel>();
+            SimpleIoc.Default.Register<MissionsMangerViewModel>();
 
         }
 
@@ -39,6 +41,14 @@ namespace MASProject.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MapViewModel>();
+            }
+        }
+
+        public MissionsMangerViewModel MissionsMangerVM
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<MissionsMangerViewModel>();
             }
         }
 

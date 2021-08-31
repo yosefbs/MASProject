@@ -1,12 +1,15 @@
-﻿using MASProject.Model.Structs;
+﻿using MASProject.Model.Logic;
+using MASProject.Model.Structs;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MASProject.Model
 {
-    public class Enviorment 
+    public class Enviorment : IEnviormentSensor
     {
+        Logger log = LogManager.GetCurrentClassLogger();
         Cell[,] mapInfo;
         PositionTracker positionTracker;
         public int NumOfRows
@@ -32,11 +35,24 @@ namespace MASProject.Model
             }
 
         }
+
+        public Cell GetHostCell(BaseItem item)
+        {
+            return GetCell(GetPosition(item));
+        }
+        public Cell GetCell(Position pos)
+        {
+            return mapInfo[pos.Row, pos.Column];
+        }
         public Cell GetCell(int row,int coulmn)
         {
             return mapInfo[row, coulmn];
         }
-        internal void ItemMoved(BaseItem item, Direction moveTo)
+         public Position GetPosition(BaseItem item)
+        {
+            return positionTracker.GetMyLocation(item);
+        }
+        private void ItemMoved(BaseItem item, Direction moveTo)
         {
             var pos = positionTracker.GetMyLocation(item);
             var cell = mapInfo[pos.Row, pos.Column];
@@ -53,23 +69,31 @@ namespace MASProject.Model
             switch (moveTo)
             {
                 case Direction.UP:
-                    newRow -= 1;                    
+                    newRow -= 1;
                     break;
                 case Direction.DOWN:
-                    newRow += 1;                    
+                    newRow += 1;
                     break;
                 case Direction.LEFT:
-                    newCoulmn -= 1;                    
+                    newCoulmn -= 1;
                     break;
                 case Direction.RIGHT:
-                    newCoulmn += 1;                    
+                    newCoulmn += 1;
                     break;
                 default:
                     break;
             }
-            mapInfo[newRow, newCoulmn].MoveInto(item);
-            mapInfo[oldRow, oldCoulmn].Leave(item);
-            positionTracker.SetItemLocation(item, new Position(newRow, newCoulmn));
+            var movedSuccess = mapInfo[newRow, newCoulmn].MoveInto(item);
+            if (!movedSuccess)
+            {
+                log.Error($"cant move {item} to {newRow},{newCoulmn}");
+            }
+            else
+            {
+                log.Debug($"{item} moved to {newRow},{newCoulmn}");
+                mapInfo[oldRow, oldCoulmn].Leave(item);
+                positionTracker.SetItemLocation(item, new Position(newRow, newCoulmn));
+            }
 
         }
         internal bool AddItem(BaseItem item,Position pos)
@@ -77,7 +101,8 @@ namespace MASProject.Model
             var obj = mapInfo[pos.Row, pos.Column];
             if (!obj.IsEmptyCell())
                 throw new ArgumentException($"{pos} already used! (${obj})");
-            mapInfo[pos.Row, pos.Column].MoveInto(item);
+             mapInfo[pos.Row, pos.Column].MoveInto(item);
+            
             positionTracker.SetItemLocation(item, pos);
             if (item is MoveableItem moveable)
             {
@@ -92,16 +117,16 @@ namespace MASProject.Model
             switch (moveTo)
             {
                 case Direction.UP:
-                    isValid = isValid && position.Row > 1;
+                    isValid = isValid && position.Row >0;
                     break;
                 case Direction.DOWN:
-                    isValid = isValid && position.Row < NumOfRows - 1;
+                    isValid = isValid && position.Row < NumOfRows ;
                     break;
                 case Direction.LEFT:
-                    isValid = isValid && position.Column > 1;
+                    isValid = isValid && position.Column > 0;
                     break;
                 case Direction.RIGHT:
-                    isValid = isValid && position.Column < NumOfCoulmns - 1;
+                    isValid = isValid && position.Column < NumOfCoulmns ;
                     break;
                 default:
                     break;
@@ -119,6 +144,11 @@ namespace MASProject.Model
             int rows = mapInfo.GetLength(0);
             int cols = mapInfo.GetLength(1);
             return pos.Row < rows && pos.Column < cols;
+        }
+
+        public bool CanMoveTo(BaseItem item, Direction direction)
+        {
+            return !InvalidMoveRequest(positionTracker.GetMyLocation(item), direction);
         }
     }
 

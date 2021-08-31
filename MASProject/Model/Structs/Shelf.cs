@@ -6,7 +6,7 @@ namespace MASProject.Model.Structs
 {
     public class Shelf: BaseItem
     {                
-        public Shelf()
+        public Shelf() : base(-2)
         {            
         }
     }

@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="MASProject.View.MissionsMangerUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MASProject.View"
+             xmlns:structs="clr-namespace:MASProject.Model.Structs" 
+             xmlns:logic="clr-namespace:MASProject.Model.Logic"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400"
+             DataContext="{Binding MissionsMangerVM, Source={StaticResource Locator}}">
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate x:Key="cmTemp" DataType="{x:Type structs:CarriersMission}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Row: "/>
+                    <TextBox Text="{Binding Row, Mode=TwoWay}" MinWidth="60"/>
+                    <TextBlock Text="Column: "/>
+                    <TextBox Text="{Binding Column, Mode=TwoWay}" MinWidth="60"/>
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate  DataType="{x:Type logic:CarrierBotController}">
+                <StackPanel  Orientation="Horizontal">
+                    <TextBox Text="aaaa"/>
+                </StackPanel>
+            </DataTemplate>
+        </Grid.Resources>
+        <StackPanel>
+        <GroupBox Header="Carrier Mission">
+            <StackPanel>
+                <TextBlock Text="From "/>
+                <ContentPresenter ContentTemplate="{StaticResource cmTemp}" Content="{Binding NewMission.From}"/>
+                <TextBlock Text="To "/>
+                <ContentPresenter ContentTemplate="{StaticResource cmTemp}" Content="{Binding NewMission.To}"/>
+                    <Button Content="Publish Mission" Command="{Binding AssignMissionCommand}" Margin="0,10,0,5">
+                    </Button>
+                    <Button Content="Stop All" Command="{Binding StopAllMission}" Margin="0,10,0,5">
+                    </Button>
+                </StackPanel>
+            
+        </GroupBox>
+        <GroupBox Header="Missons Info">
+                <ListItem/>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

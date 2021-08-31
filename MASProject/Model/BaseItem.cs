@@ -9,11 +9,15 @@ namespace MASProject.Model
     public abstract class BaseItem
     {
 
-        
+        public int Id { get; set; }
         public bool IsMoveable { get; protected set; }
         public void CrashWith(BaseItem item)
         {
             IsMoveable = false;
+        }
+        public BaseItem(int id)
+        {
+            Id = id;
         }
 
     }
@@ -23,7 +27,7 @@ namespace MASProject.Model
     {
         public event ItemMoved OnItemMoved;
      
-        public MoveableItem()
+        public MoveableItem(int id):base(id)
         {
             IsMoveable = true;
         }

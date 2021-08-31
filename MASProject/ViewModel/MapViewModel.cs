@@ -16,6 +16,7 @@ namespace MASProject.ViewModel
         public MapViewModel( )
         {
             MapData = new MatrixMap(EnviormentController.EnvInstance);
+            
         }
     }
   

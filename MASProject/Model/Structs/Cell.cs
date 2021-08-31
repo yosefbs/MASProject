@@ -30,8 +30,8 @@ namespace MASProject.Model.Structs
         {
             if(CellContent != null && item !=null)
             {
-                CellContent.CrashWith(item);
-                item.CrashWith(CellContent);
+                //CellContent.CrashWith(item);
+                //item.CrashWith(CellContent);
                 return false;
             }
 

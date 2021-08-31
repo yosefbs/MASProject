@@ -9,11 +9,11 @@ namespace MASProject.Model.Structs
     
         public uint Row
         {
-            get;private set;
+            get; set;
         }
         public uint Column
         {
-            get; private set;
+            get;  set;
         }
 
         public Position(uint row, uint coulmn)
@@ -23,9 +23,18 @@ namespace MASProject.Model.Structs
 
         }
 
+        public  bool EqualsPos(Position obj)
+        {
+            return this.Row == obj.Row && this.Column == obj.Column;
+        }
         public override string ToString()
         {
             return $"({Row},{Column})";
+        }
+
+        public int DistanceFrom(Position pos)
+        {
+            return (int)Math.Sqrt(Math.Pow(this.Column - pos.Column, 2) + Math.Pow(this.Row - pos.Row, 2));
         }
 
     }

@@ -75,6 +75,7 @@
       BorderBrush="{StaticResource BorderBrush}" 
       BorderThickness="{StaticResource BorderThickness}" 
             Background="Green">
+            <TextBlock Text="{Binding NameId}" Foreground="Yellow" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
     </DataTemplate>
 
